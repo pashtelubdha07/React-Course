@@ -1,0 +1,31 @@
+import time
+import json
+import random
+import paho.mqtt.client as mqtt
+
+# -------------------------
+# ThingsBoard Device Token
+ACCESS_TOKEN = "N8lEYSLBRM4jMbfo7CLQ"
+# -------------------------
+
+# Connect to ThingsBoard
+client = mqtt.Client()
+client.username_pw_set(ACCESS_TOKEN)
+client.connect("samasth.io", 1883, 60)
+client.loop_start()
+
+while True:
+    # Generate random value
+    random_value = random.randint(10, 100)  # random number between 10 and 100
+    
+    # Prepare shared attribute payload
+    shared_attributes = {
+        "random_number": random_value
+    }
+
+    # Publish to ThingsBoard Shared Attributes
+    client.publish("v1/devices/me/attributes", json.dumps(shared_attributes))
+    
+    print("Updated Shared Attribute:", shared_attributes)
+
+    time.sleep(30)  # wait 30 sec before next update
